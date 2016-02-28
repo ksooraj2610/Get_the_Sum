@@ -1,6 +1,14 @@
 from game import game
-	
+
+		
 ob=game()
 #print ob.d.deq
-ob.play()
+
+ob.start()
+ob.clear()
+ob.update()
+ob.winner()
+
+
 ob.master.mainloop( )
+
