@@ -151,12 +151,10 @@ class game:
 	def winner(self):
 		if self.win()==1:
 			showinfo('Game Over','Player 1 has won')
-			self.rect.quit()
 
 		if self.win()==2:
 			showinfo('Game Over','Player 2 has won')
-			self.rect.quit()
-			
+
 	def pick1(self):
 		if self.turn % 2==0:
 			if self.countp % 2==0 and self.countd % 2==0:
