@@ -7,26 +7,16 @@ from queue import MyQueue
 
 class game:
 	
-	def __init__(self):
+	def __init__(self,n1,n2):
 		self.master = Tk()
 		self.master.wm_title("Get the Sum....")
 		self.master.geometry('2000x1000')
 		self.frame = Frame(self.master)
 		self.rect=Canvas(self.master,bg='blue',width=2000, height=1000)
-
-
+		self.n1=n1
+		self.n2=n2
+		
 	def play(self):
-#		self.rect.grid()
-#		for i in range(0,200):
-#			Label(self.rect, text="",bg='blue').grid(row=i,column=i)
-#		Button(self.rect, text='Start',bg='orange',width=16,command=self.start).grid(row=30,column=20)
-#		self.rect.create_rectangle(178,442,212,586)
-#		self.rect.grid()
-#		for i in range(0,200):
-#				Label(self.frame, text="",bg='blue').grid(row=i,column=i)
-#		for i in range(0,200):
-#				Label(self.rect, text="",bg='blue').grid(row=i,column=i)
-	
 		self.start()
 		
 	def entry(self,p):
@@ -89,6 +79,11 @@ class game:
 			return 2	
 	
 	def start(self):
+		filename1 = PhotoImage(file = "1.png")
+		filename2 = PhotoImage(file = "2.PNG")
+		self.rect.create_image(200, 400, image=filename1)
+		self.rect.create_image(980, 400, image=filename2)
+		self.rect.pack(expand = YES, fill = BOTH)
 #		self.rect.destroy()
 		value=randint(10,30)
 		self.turn=0
@@ -114,11 +109,14 @@ class game:
 		self.e1.grid(row=31, column=28)
 		Button(self.rect, text='Pick',bg='orange',width=16,command=self.pick1).grid(row=30, column=28)
 		Button(self.rect, text='Drop',bg='green',width=16,command=self.drop1).grid(row=32, column=28)
+		Label(self.rect,text=self.n1,font=(None,15),bg='blue',fg='yellow').grid(row=34,column=28)
+		
 		self.e2 = Entry(self.rect)
 		self.e2.grid(row=31, column=95)
 		Button(self.rect, text='Pick',bg='orange',width=16,command=self.pick2).grid(row=30, column=95)
 		Button(self.rect, text='Drop',bg='green',width=16,command=self.drop2).grid(row=32, column=95)
-
+		Label(self.rect,text=self.n2,font=(None,15),bg='blue',fg='yellow').grid(row=34,column=95)
+		
 		self.p=value
 		self.d=deque()
 		s=[8,4,2,1,0]
@@ -142,13 +140,16 @@ class game:
 			self.p2.push(b2)
 			self.sum2+=b2
 		
+		Label(self.rect,text=self.sum1,font=(None,12),bg='blue',fg='white').grid(row=35,column=28,pady=5)
+		Label(self.rect,text=self.sum2,font=(None,12),bg='blue',fg='white').grid(row=35,column=95,pady=5)
+	
 		self.clear()
 		self.update()
 		self.winner()
-	
+		self.rect.mainloop()
 			
 	def check_empty(self):
-		print self.d.deq
+		#print self.d.deq
 		if self.d.empty()==True:
 			for i in range(0,self.q.size()):
 				self.d.insert_at_front(self.q.dequeue())
@@ -174,11 +175,13 @@ class game:
 		
 	def winner(self):
 		if self.win()==1:
-			showinfo('Game Over','Player 1 has won')
+			a="Congrats.. "+ self.n1 + " has won"
+			showinfo('Game Over',a)
 			self.rect.quit()
 
 		if self.win()==2:
-			showinfo('Game Over','Player 2 has won')
+			a="Congrats.. "+ self.n2 + " has won"
+			showinfo('Game Over',a)
 			self.rect.quit()
 			
 	def pick1(self):
@@ -192,9 +195,10 @@ class game:
 				self.countp+=1
 				
 			elif self.countp % 2 !=0 and self.countd % 2==0: 
-				showwarning('Player 1', "You have already picked a ball.... ")					
+				showwarning(self.n1, "You have already picked a ball.... ")					
 		else:
-			showwarning('Oops..', "It's Player 2's Turn")
+			b="It's "+self.n2+"'s Turn"
+			showwarning('Oops..',b)
 			
 	def drop1(self):
 		if self.turn % 2 ==0:
@@ -204,9 +208,11 @@ class game:
 					self.e1.delete(0, 'end')
 					val=self.search(no,1)
 					self.sum1-=val
+					Label(self.rect,text="   ",font=(None,12),bg='blue',fg='white').grid(row=35,column=28,pady=7)
+					Label(self.rect,text=self.sum1,font=(None,12),bg='blue',fg='white').grid(row=35,column=28,pady=7)
 					if no==val:
 						self.q.enqueue(val)
-						print self.q.queue	
+						#print self.q.queue	
 						self.clear()
 						self.update()
 						self.winner()
@@ -223,8 +229,11 @@ class game:
 				self.turn+=1
 		
 		else:
-			showwarning('Oops..', "It's Player 2's Turn")
+			b="It's "+self.n2+"'s Turn"
+			showwarning('Oops..',b)
 			self.e1.delete(0, 'end')		
+		self.e1.delete(0, 'end')
+		self.e2.delete(0, 'end')	
 	
 	def pick2(self):
 		if self.turn % 2!=0:
@@ -237,9 +246,10 @@ class game:
 				self.countp+=1
 				
 			elif self.countp % 2 ==0 and self.countd % 2!=0: 
-				showwarning('Player 2', "You have already picked a ball.... ")					
+				showwarning(self.n2, "You have already picked a ball.... ")					
 		else:
-			showwarning('Oops..', "It's Player 1's Turn")	
+			b="It's "+self.n1+"'s Turn"
+			showwarning('Oops..',b)	
 	
 	def drop2(self):
 		if self.turn % 2 ==1:
@@ -249,9 +259,11 @@ class game:
 					self.e2.delete(0, 'end')	
 					val=self.search(no,2)
 					self.sum2-=val
+					Label(self.rect,text="   ",font=(None,12),bg='blue',fg='white').grid(row=35,column=95,pady=7)
+					Label(self.rect,text=self.sum2,font=(None,12),bg='blue',fg='white').grid(row=35,column=95,pady=7)
 					if no==val:
 						self.q.enqueue(val)
-						print self.q.queue
+						#print self.q.queue
 						self.clear()
 						self.update()
 						self.winner()
@@ -268,5 +280,8 @@ class game:
 				self.turn+=1
 		
 		else:
-			showwarning('Oops..', "It's Player 1's Turn")
+			b="It's "+self.n1+"'s Turn"
+			showwarning('Oops..', b)
 			self.e2.delete(0, 'end')
+		self.e1.delete(0, 'end')
+		self.e2.delete(0, 'end')
